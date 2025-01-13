@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Testing management system</title>
+</head>
+<body>
+    <h3 th:if="@{currentUser}" th:text="'Вы вошли как: ' +  ${currentUser.login}"></h3>
+    <form th:action="@{/analyst/logout}" method="get">
+        <button type="submit" >выйти</button>
+    </form>
+
+    <h2>Выберите проект</h2>
+    <form th:action="@{/analyst/projectName}" method="POST" th:object="${projectName}">
+        <select class="form-control" id="dropDownProjectList" name="projectName">
+            <option value="0">Выберите проект</option>
+            <option th:each="project : ${projects}" th:value="${project.title}" th:text="${project.title}"></option>
+        </select>
+        <button type="submit">Подтвердить</button>
+    </form>
+
+<!--    появляется при выборе проекта-->
+    <div th:if="${selectedProject != null}">
+<!--        описание проекта-->
+        <h3 th:text="${selectedProject.title}"></h3>
+        <div th:each="requirement : ${requirements}">
+            <b th:text="${requirement.description}"></b>
+            <br><br/>
+        </div>
+
+        <form th:action="@{/analyst/testPlans}" method="get">
+            <button type="submit">Work with test plans</button>
+        </form>
+        <form th:action="@{/analyst/scenarios}" method="get">
+            <button type="submit">Work with scenarios</button>
+        </form>
+        <form th:action="@{/analyst/testCases}" method="get">
+            <button type="submit">Work with test cases</button>
+        </form>
+    </div>
+
+    <br>
+    <br>
+    <form th:action="@{/statistics}" method="get">
+        <button type="submit" >Посмотреть статистику тестирования</button>
+    </form>
+
+</body>
+</html>

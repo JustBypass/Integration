@@ -1,59 +1,60 @@
 services:
   pms_api:
-    container_name: pms_api
+    container_name: pms-api
     environment:
-      DB_CONNECTION_STRING: postgres://admin:pmsmephi@pms_postgresql:5432/pms-develop?sslmode=disable
+      DB_CONNECTION_STRING: postgres://admin:pmsmephi@pms_postgresql:5433/pms-develop?sslmode=disable
+
     build:
       context: .
       dockerfile: docker/pms_api/pmsapi.dockerfile
     ports:
       - 8080:8080
     depends_on:
-      pms_postgresql:
-        condition: service_healthy
+      - pms_postgresql
+#        condition: service_healthy
     networks: [ "pms_services" ]
 
   pms_postgresql:
     image: postgres
     container_name: pms_postgresql
-    expose:
-      - 5432
+#    expose:
+#      - 5433
     ports:
-      - 5432:5432
+      - "5433:5432"
     restart: always
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=pmsmephi
       - POSTGRES_DB=pms-develop
-      - POSTGRES_HOST=5432
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U admin -d pms-develop" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    command: -p 5432
+      - PGPORT=5433
+#    healthcheck:
+#      test: [ "CMD-SHELL", "pg_isready -U admin -d pms-develop" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    command: postgres -p 5433
     volumes:
-      - ./pms_pgdata:/var/lib/postgresql/data
+      - ./pms_pgdata:/var/lib/postgresql@17/data
     networks: [ "pms_services" ]
     
-  ai_service:
-    container_name: ai_service
-    build: 
-      context: .
-      dockerfile: docker/ai_service/aiservice.dockerfile
-    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-    ports:
-      - 8000:8000
-    environment:
-      - DATABASE_URI=postgresql://AI_db_username:AI_db_password@AI_db:5432/AI_db_dev
-
-  AI_db:
-    image: postgres
-    container_name: AI_db
-    environment:
-      - POSTGRES_USER=AI_db_username
-      - POSTGRES_PASSWORD=AI_db_password
-      - POSTGRES_DB=AI_db_dev
+#  ai_service:
+#    container_name: ai_service
+#    build:
+#      context: .
+#      dockerfile: docker/ai_service/aiservice.dockerfile
+#    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+#    ports:
+#      - 8000:8000
+#    environment:
+#      - DATABASE_URI=postgresql://AI_db_username:AI_db_password@AI_db:5433/AI_db_dev
+#
+#  AI_db:
+#    image: postgres
+#    container_name: AI_db
+#    environment:
+#      - POSTGRES_USER=AI_db_username
+#      - POSTGRES_PASSWORD=AI_db_password
+#      - POSTGRES_DB=AI_db_dev
 
 networks:
   pms_services:

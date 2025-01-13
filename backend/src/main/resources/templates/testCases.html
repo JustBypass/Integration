@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Testing management system</title>
+</head>
+<body>
+
+<h2>Выберите тест-кейс</h2>
+<form th:action="@{/analyst/testCases/alter}" method="POST" th:object="${chosenTestCase}">
+    <select class="form-control" name="chosenTestCase">
+        <option value="0">Выберите тест-кейс</option>
+        <option th:each="testCase : ${testCases}" th:value="${testCase.id}" th:text="${testCase.title}"></option>
+    </select>
+    <button type="submit" name="action" value="delete">Удалить</button>
+    <button type="submit" name="action" value="change">Изменить</button>
+</form>
+<br>
+
+<h2>Добавить тест-кейс</h2>
+<form method="POST" th:action="@{/analyst/testCases/add}" th:object="${testCaseForm}">
+
+    <label for="title">Название: </label>
+    <input type="text" id="title" name="title" th:field="*{testCaseTitle}"/><br/>
+
+    <label for="description">Описание: </label>
+    <input type="text" id="description" name="description" th:field="*{testCaseDescription}"/><br/>
+
+    <label for="inputData">Входные данные: </label>
+    <input type="text" id="inputData" name="inputData" th:field="*{inputData}"/><br/>
+
+    <label for="outputData">Выходные данные: </label>
+    <input type="text" id="outputData" name="outputData" th:field="*{outputData}"/><br/>
+
+
+    <button type="submit" name="action" value="add">Добавить новый тест-кейс</button>
+</form>
+
+<br>
+<br>
+<form th:action="@{/analyst}" method="get">
+    <button type="submit" >Вернуться к выбору проекта</button>
+</form>
+
+</body>
+</html>

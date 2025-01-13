@@ -3,15 +3,22 @@ package app
 import (
 	"context"
 	"fmt"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/gommon/log"
+	echoSwagger "github.com/swaggo/echo-swagger"
 	"log/slog"
 	"net/http"
-	"net/url"
 	"os"
 	auth_handler "pms_backend/pms_api/internal/api/http/auth"
 	profile_handler "pms_backend/pms_api/internal/api/http/profile"
 	project_handler "pms_backend/pms_api/internal/api/http/project"
 	task_handler "pms_backend/pms_api/internal/api/http/task"
 	user_handler "pms_backend/pms_api/internal/api/http/user"
+
+	integration_handler "pms_backend/pms_api/internal/api/http/integration"
+
 	"pms_backend/pms_api/internal/config"
 	"pms_backend/pms_api/internal/pkg/model"
 	auth_repository "pms_backend/pms_api/internal/repository/auth/postgres"
@@ -19,18 +26,10 @@ import (
 	task_repository "pms_backend/pms_api/internal/repository/task/postgres"
 	user_repository "pms_backend/pms_api/internal/repository/user/postgres"
 	auth_service "pms_backend/pms_api/internal/service/auth"
+	integration_service "pms_backend/pms_api/internal/service/integration"
 	project_service "pms_backend/pms_api/internal/service/project"
 	task_service "pms_backend/pms_api/internal/service/task"
 	user_service "pms_backend/pms_api/internal/service/user"
-	"strings"
-
-	"github.com/golang-jwt/jwt/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
-	echojwt "github.com/labstack/echo-jwt/v4"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
-	"github.com/labstack/gommon/log"
-	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 func (a *App) init(ctx context.Context) error {
@@ -111,30 +110,30 @@ func (a *App) initMiddleware(ctx context.Context) error {
 			c.Logger().Error(err)
 		}
 	}
-	a.router.Use(echojwt.WithConfig(echojwt.Config{
-		SigningKey: []byte(a.config.Http.SigningKey),
-		Skipper: func(c echo.Context) bool {
-			loginPath, err := url.JoinPath(a.config.Http.BasePath, "login")
-			if err != nil {
-				slog.Error("Error in registration login path: " + err.Error())
-			}
-			refreshTokenPath, err := url.JoinPath(a.config.Http.BasePath, "refresh")
-			if err != nil {
-				slog.Error("Error in registration refresh token path: " + err.Error())
-			}
-			if strings.Contains(c.Request().URL.Path, loginPath) ||
-				strings.Contains(c.Request().URL.Path, refreshTokenPath) {
-				return true
-			}
-			if strings.Contains(c.Request().URL.Path, a.config.Http.BasePath) {
-				return false
-			}
-			return true
-		},
-		NewClaimsFunc: func(c echo.Context) jwt.Claims {
-			return new(model.AppClaims)
-		},
-	}))
+	//a.router.Use(echojwt.WithConfig(echojwt.Config{
+	//	SigningKey: []byte(a.config.Http.SigningKey),
+	//	Skipper: func(c echo.Context) bool {
+	//		loginPath, err := url.JoinPath(a.config.Http.BasePath, "login")
+	//		if err != nil {
+	//			slog.Error("Error in registration login path: " + err.Error())
+	//		}
+	//		refreshTokenPath, err := url.JoinPath(a.config.Http.BasePath, "refresh")
+	//		if err != nil {
+	//			slog.Error("Error in registration refresh token path: " + err.Error())
+	//		}
+	//		if strings.Contains(c.Request().URL.Path, loginPath) ||
+	//			strings.Contains(c.Request().URL.Path, refreshTokenPath) {
+	//			return true
+	//		}
+	//		if strings.Contains(c.Request().URL.Path, a.config.Http.BasePath) {
+	//			return false
+	//		}
+	//		return true
+	//	},
+	//	NewClaimsFunc: func(c echo.Context) jwt.Claims {
+	//		return new(model.AppClaims)
+	//	},
+	//}))
 
 	return nil
 }
@@ -165,6 +164,7 @@ func (a *App) registerRoutes(ctx context.Context) error {
 		task_handler.NewHandler(
 			task_service.NewTaskService(task_repository.NewRepository(a.db)),
 		),
+		integration_handler.NewHandler(integration_service.NewIntegrationService(user_repository.NewUserRepository(a.db))),
 	}
 
 	for _, h := range handlers {

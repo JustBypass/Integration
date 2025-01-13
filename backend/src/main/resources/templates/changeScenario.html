@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Testing management system</title>
+</head>
+<body>
+
+<h2>Изменить сценарий</h2>
+<form method="POST" th:action="@{/analyst/scenarios/__${id}__/submit}">
+
+    <label for="title">Название: </label>
+    <input th:value="${scenarioTitle}" type="text" id="title" name="scenarioTitle" /><br/>
+
+    <button type="submit" name="action" value="add">Сохранить изменения</button>
+</form>
+
+
+<br>
+<br>
+<form th:action="@{/analyst/scenarios}" method="get">
+    <button type="submit" >Вернуться к управлению сценариями</button>
+</form>
+
+</body>
+</html>

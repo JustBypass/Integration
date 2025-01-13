@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Testing management system</title>
+</head>
+<body>
+
+    <h2 th:if="${currentConnection == null}">Тест-кейсов для исполнения не осталось</h2>
+
+    <div th:if="${currentConnection != null}">
+        <h2>Название тест-кейса</h2>
+        <b th:text="${currentConnection.testCase.title}"></b>
+        <h2>Описание тест-кейса</h2>
+        <b th:text="${currentConnection.testCase.description}"></b>
+        <h2>Входные данные</h2>
+        <b th:text="${currentConnection.testCase.inputData}"></b>
+        <h2>Выходные данные</h2>
+        <b th:text="${currentConnection.testCase.outputData}"></b>
+        <form th:action="@{/tester/testingProcess/submit}" method="POST" th:object="${executedTestCaseForm}">
+            <h3>Успешно ли выполнен данный тест</h3>
+            <input type="checkbox" name="passed" th:field="*{passed}"/><br/>
+            <h3>Введите комментарий, что произошло при неуспешном выполнении или другой</h3>
+            <input type="text" name="comment" th:field="*{comment}"/>
+
+            <button type="submit">Тест-кейс выполнен</button>
+        </form>
+    </div>
+
+    <br/>
+    <br/>
+    <form method="GET" th:action="@{/tester}">
+        <button>Вернуться к выбору тест-планов и сценариев</button>
+    </form>
+</body>
+</html>

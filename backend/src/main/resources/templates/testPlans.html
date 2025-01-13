@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Testing management system</title>
+</head>
+<body>
+
+<h2>Выберите тест-план</h2>
+<form th:action="@{/analyst/testPlans/alter}" method="POST" th:object="${chosenTestPlan}">
+    <select class="form-control" name="chosenTestPlan">
+        <option value="0">Выберите тест-план</option>
+        <option th:each="plan : ${testPlans}" th:value="${plan.id}" th:text="${plan.title}"></option>
+    </select>
+    <button type="submit" name="action" value="delete">Удалить</button>
+    <button type="submit" name="action" value="change">Изменить</button>
+</form>
+<br>
+
+
+<h2>Добавить новый тест-план</h2>
+<form method="POST" th:action="@{/analyst/testPlans/add}" id="testPlanForm" th:object="${testPlanForm}">
+
+    <label for="title">Название: </label>
+    <input type="text" id="title" name="title" th:field="*{testPlanTitle}"/><br/>
+
+    <label for="startDate">Дата начала:</label>
+    <input type="date" id="startDate" name="startDate" th:field="*{startDate}">
+
+    <label for="endDate">Дата конца:</label>
+    <input type="date" id="endDate" name="endDate" th:field="*{endDate}">
+
+    <button type="submit" name="action" value="add">Добавить новый тест план</button>
+</form>
+
+
+<h2>Выберите тест-план и сценарии которые необходимо в него включить</h2>
+<form  th:action="@{/analyst/testPlans/populate}" method="POST" th:object="${populateTestPlanForm}">
+    <select class="form-control" name="testPlanId" th:field="*{formTestPlan}">
+        <option value="0">Выберите тест-план</option>
+        <option th:each="testPlan : ${testPlans}" th:value="${testPlan.id}" th:text="${testPlan.title}" ></option>
+    </select>
+
+
+    <div th:each="scenario : ${scenarios}">
+        <input type="checkbox"  th:value="${scenario.id}"  th:field="*{scenarios}"/>
+        <span th:text="${scenario.title}"></span><br/>
+    </div>
+    <button>Добавить выбранные сценарии в выбранный тест-план</button>
+</form>
+
+<br>
+<br>
+<form th:action="@{/analyst}" method="get">
+    <button type="submit" >Вернуться к выбору проекта</button>
+</form>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+basePath: /api/v1
+host: localhost:8080
+info:
+  contact: {}
+  description: PMS - project management system. It is course work of student team
+    for 5 course in MEPhI.
+  termsOfService: http://swagger.io/terms/
+  title: PMS API
+  version: "1.0"
+paths: {}
+securityDefinitions:
+  Login:
+    description: Type "Bearer TOKEN" to correctly set the API Key
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

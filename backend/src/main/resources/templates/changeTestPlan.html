@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Testing management system</title>
+</head>
+<body>
+
+<h2>Добавить новый тест-план</h2>
+<form method="POST" th:action="@{/analyst/testPlans/__${id}__/submit}" id="testPlanForm" th:object="${changeTestPlanForm}">
+
+    <label for="title">Название: </label>
+    <input type="text" id="title" name="title" th:field="*{testPlanTitle}"/><br/>
+
+    <label for="startDate">Дата начала:</label>
+    <input type="date" id="startDate" name="startDate" th:field="*{startDate}">
+
+    <label for="endDate">Дата конца:</label>
+    <input type="date" id="endDate" name="endDate" th:field="*{endDate}">
+
+    <button type="submit" name="action" value="add">Сохранить изменения</button>
+</form>
+
+<br>
+<br>
+<form th:action="@{/analyst/testPlans}" method="get">
+    <button type="submit" >Вернуться к управлению тест-планами</button>
+</form>
+
+</body>
+</html>

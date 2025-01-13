@@ -14,7 +14,7 @@ CREATE SEQUENCE IF NOT EXISTS public.role__role_id_seq
 ALTER SEQUENCE public.role__role_id_seq
     OWNER TO admin;
 
--- Table: public.role
+-- Table: public.roleфф
 
 -- DROP TABLE IF EXISTS public.role;
 
@@ -127,3 +127,51 @@ TABLESPACE pg_default;
 ALTER TABLE IF EXISTS public.task
     OWNER to admin;
 
+
+
+
+CREATE VIEW public.testers_view AS
+SELECT DISTINCT
+    u.first_name AS name,
+    u.last_name AS surname,
+    u.middle_name AS patronymic,
+    u.is_admin AS is_active,
+    r.name_role AS role,
+    u.login
+FROM public.task t
+         JOIN public.users u ON t.tester_id = u.id
+         JOIN public.participants_project pp ON pp.user_id = u.id
+         JOIN public.role r ON r.id = pp.role_id
+WHERE t.tester_id IS NOT NULL;
+
+
+INSERT INTO public.role (id, name_role)
+VALUES
+    (1, 'Руководитель проекта'),
+    (2, 'Участник')
+    ON CONFLICT DO NOTHING;
+
+
+INSERT INTO public.users (id, first_name, middle_name, last_name, position, is_admin, login, password, created_at, updated_at)
+VALUES
+    ('1f8b9c10-d79b-11ed-afa1-0242ac120002', 'Иван', 'Иванович', 'Петров', 'Разработчик', false, 'ivan.petrov', '\\x73656372657431', NOW(), NOW()),
+    ('2a1c8d20-d79b-11ed-afa1-0242ac120002', 'Петр', 'Петрович', 'Сидоров', 'Тестировщик', false, 'petr.sidorov', '\\x73656372657432', NOW(), NOW())
+    ON CONFLICT DO NOTHING;
+
+
+INSERT INTO public.project (id, name, description, is_active, created_at, updated_at)
+VALUES
+    ('3b2d9e30-d79b-11ed-afa1-0242ac120002', 'Проект А', 'Описание проекта А', true, NOW(), NOW())
+    ON CONFLICT DO NOTHING;
+
+INSERT INTO public.participants_project (user_id, project_id, role_id, is_admin_project)
+VALUES
+    ('2a1c8d20-d79b-11ed-afa1-0242ac120002', '3b2d9e30-d79b-11ed-afa1-0242ac120002', 2, false)
+    ON CONFLICT DO NOTHING;
+
+INSERT INTO public.task (id, name, description, status, project_id, created_at, deadline, author_id, executor_id, tester_id)
+VALUES
+    ('4c3f7f40-d79b-11ed-afa1-0242ac120002', 'Тестовая задача', 'Описание задачи', 'На тестировании', '3b2d9e30-d79b-11ed-afa1-0242ac120002', NOW(), NOW() + INTERVAL '7 days', '1f8b9c10-d79b-11ed-afa1-0242ac120002', '1f8b9c10-d79b-11ed-afa1-0242ac120002', '2a1c8d20-d79b-11ed-afa1-0242ac120002')
+    ON CONFLICT DO NOTHING;
+
+SELECT * FROM public.testers_view;

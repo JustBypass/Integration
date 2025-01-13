@@ -55,6 +55,12 @@ func (r *repository) AddProjectMember(ctx context.Context, projectID string, mem
 		"role_id":          roleID,
 		"is_admin_project": member.IsAdminProject,
 	})
+	// Извлечь fullname из юзера
+	// func (u User) FullName() string {
+	//	// Используем strings.TrimSpace, чтобы избежать лишних пробелов, если MiddleName пустой
+	//	return strings.TrimSpace(fmt.Sprintf("%s %s %s", u.FirstName, u.MiddleName, u.LastName))
+	//}
+	// по role_id найти название роли
 	return err
 }
 

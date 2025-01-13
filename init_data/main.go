@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	connStr := "postgres://admin:pmsmephi@pms_postgresql:5432/pms-develop?sslmode=disable"
+	connStr := "postgres://admin:pmsmephi@pms_postgresql:5433/pms-develop?sslmode=disable"
 
 	conn, err := pgx.Connect(context.Background(), connStr)
 	if err != nil {

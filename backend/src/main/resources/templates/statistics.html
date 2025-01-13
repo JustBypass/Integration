@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Testing management system</title>
+    <script>
+        function filterProjects() {
+            var select = document.getElementById("projectSelect");
+            var selectedProject = select.options[select.selectedIndex].value;
+            var projectStats = document.getElementsByClassName("project-stat");
+
+            for (var i = 0; i < projectStats.length; i++) {
+                if (selectedProject === "0" || projectStats[i].getAttribute("data-project") === selectedProject) {
+                    projectStats[i].style.display = "block";
+                } else {
+                    projectStats[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>Общая статистика по всем проектам</h1>
+<div th:each="projectStat : ${totalStatistics}" th:attr="data-project=${projectStat.title}" class="project-stat">
+    <h3 th:text="'Проект ' + ${projectStat.title}"></h3>
+    <h6>Прошло тестов/всего</h6>
+    <b th:text="${projectStat.passed} + '/' + ${projectStat.total}"></b>
+
+    <div th:each="testPlanStat : ${projectStat.testPlanStatistics}">
+        <h4 th:text="'Тест-план ' + ${testPlanStat.title}"></h4>
+        <h6>Прошло тестов/всего</h6>
+        <b th:text="${testPlanStat.passed} + '/' + ${testPlanStat.total}"></b>
+
+        <div th:each="scenarioStat : ${testPlanStat.scenarioStatistics}">
+            <h4 th:text="'Сценарий ' + ${scenarioStat.title}"></h4>
+            <h6>Прошло тестов/всего</h6>
+            <b th:text="${scenarioStat.passed} + '/' + ${scenarioStat.total}"></b>
+        </div>
+    </div>
+</div>
+
+<h2>Отфильтровать по конкретному проекту</h2>
+
+<select id="projectSelect" name="project" onchange="filterProjects()">
+    <option value="0">Сбросить фильтр</option>
+    <option th:each="project : ${projects}" th:value="${project.title}" th:text="${project.title}"></option>
+</select>
+
+</body>
+</html>

@@ -12,4 +12,5 @@ type UserRepository interface {
 	UpdateUser(ctx context.Context, user *model.User) error
 	DeleteUser(ctx context.Context, userID string) error
 	GetUserProjects(ctx context.Context, userID string) ([]*model.ProjectShort, error)
+	GetAllUsers(ctx context.Context) ([]model.NUser, error)
 }

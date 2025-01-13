@@ -1,0 +1,94 @@
+server:
+  port: 9091
+#  ssl:
+#    key-store: classpath:mykeys.jks
+#    key-store-password: G4s7Zd6h2
+#    key-password: G4s7Zd6h2
+management:
+  info:
+    java:
+      enabled: true
+    os:
+      enabled: true
+  endpoint:
+    env:
+      show-values: always
+  endpoints:
+    web:
+      base-path: /management
+      exposure:
+#        include: health,info,beans,conditions
+        include: "*"
+
+
+spring:
+  sql:
+    init:
+      mode: always
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://psql-db:5432/testing_system
+    username: testing_connection
+    password: G4s7Zd6h2
+  jpa:
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create
+      #ddl-auto: create/validate/update
+    defer-datasource-initialization: true
+  data:
+    rest:
+      base-path: /api
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9093/oauth2/jwks
+  artemis:
+    mode: native
+#    broker-url: "tcp://192.168.1.210:9876"
+    user: "gmak"
+    password: "G4s7Zd6h2"
+  rabbitmq:
+    template:
+      exchange: testingSystem.case
+      routing-key: general
+  kafka:
+    bootstrap-servers:
+      - localhost:9092
+    template:
+      default-topic: testingSystem
+    producer:
+      keySerializer: org.springframework.kafka.support.serializer.JsonSerializer
+      valueSerializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring:
+          json:
+            type:
+              headers: false
+  boot:
+    admin:
+      client:
+        url: http://localhost:9095
+        username: admin
+        password: admin
+  application:
+    name: TestingSystem
+  jmx:
+    enabled: true
+
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: DEBUG
+    org.springframework.jdbc: DEBUG
+    org.springframework.security: DEBUG
+#  file:
+#    name: my.log
+#  logback:
+#    rollingpolicy:
+#      max-history: 1
+
+
+#    add jpa:hibernate:ddl-auto=none in application.properties
+#    this sql will be executed

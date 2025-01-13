@@ -1,9 +1,13 @@
 package user
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha256"
+	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
 	"pms_backend/pms_api/internal/pkg/apperror"
 	"pms_backend/pms_api/internal/pkg/model"
 	"pms_backend/pms_api/internal/pkg/repository/interfaces"
@@ -11,6 +15,19 @@ import (
 
 	"github.com/google/uuid"
 )
+
+const URL = "http://testing-app:9091/api/integration/"
+
+func ConvertToNUser(u *model.User) model.NUser {
+	return model.NUser{
+		Name:       u.FirstName,
+		Surname:    u.LastName,
+		Patronymic: u.MiddleName,
+		Login:      u.Username,
+		Password:   "", // Это поле, возможно, нужно будет брать из другого источника
+		FullName:   fmt.Sprintf("%s %s %s", u.FirstName, u.MiddleName, u.LastName),
+	}
+}
 
 type userService struct {
 	userRepository interfaces.UserRepository
@@ -58,9 +75,22 @@ func (s *userService) CreateUser(ctx context.Context, u *model.UserInserted) (*m
 		CreatedAt:  now,
 		UpdatedAt:  now,
 	}
-	err = s.userRepository.CreateUser(ctx, user)
+	_ = s.userRepository.CreateUser(ctx, user)
+
+	nUser := ConvertToNUser(user)
+
+	bytesRepresentation, err := json.Marshal(nUser)
 	if err != nil {
-		return nil, fmt.Errorf("creating user: %w", err)
+		log.Fatalln("Error marshaling NUser:", err)
+	}
+
+	fmt.Println("JSON Representation:", string(bytesRepresentation))
+	if user.IsAdmin == false {
+		_, err = http.Post(URL+"createUser",
+			"application/json", bytes.NewBuffer(bytesRepresentation))
+		if err != nil {
+			return nil, fmt.Errorf("creating user: %w", err)
+		}
 	}
 	return user, nil
 }
@@ -83,10 +113,20 @@ func (s *userService) UpdateUser(ctx context.Context, userID string, u *model.Us
 		Position:   u.Position,
 		UpdatedAt:  time.Now(),
 	}
-	err = s.userRepository.UpdateUser(ctx, user)
+	_ = s.userRepository.UpdateUser(ctx, user)
+
+	nUser := ConvertToNUser(user)
+
+	bytesRepresentation, err := json.Marshal(nUser)
+	if err != nil {
+		log.Fatalln("Error marshaling NUser:", err)
+	}
+
+	_, err = http.Post(URL+"updateUser", "application/json", bytes.NewBuffer(bytesRepresentation))
 	if err != nil {
 		return nil, fmt.Errorf("updating user: %w", err)
 	}
+
 	return user, nil
 }
 
@@ -99,9 +139,14 @@ func (s *userService) DeleteUser(ctx context.Context, userID string) error {
 		return apperror.NotFound
 	}
 	err = s.userRepository.DeleteUser(ctx, userID)
+
+	bytesRepresentation, err := json.Marshal(userID)
 	if err != nil {
-		return fmt.Errorf("deleting user: %w", err)
+		log.Fatalln(err)
 	}
+	_, err = http.Post(URL+"updateUser",
+		"application/json", bytes.NewBuffer(bytesRepresentation))
+
 	return nil
 }
 

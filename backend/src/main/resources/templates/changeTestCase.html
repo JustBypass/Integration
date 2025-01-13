@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Testing management system</title>
+</head>
+<body>
+
+
+<h2>Изменить тест-кейс</h2>
+<h3>При изменении тест-кейса, он перестает считаться выполненным во всех сценариях</h3>
+<form method="POST" th:action="@{/analyst/testCases/__${id}__/submit}" th:object="${changeTestCaseForm}">
+
+    <label for="title">Название: </label>
+    <input type="text" id="title" name="title" th:field="*{testCaseTitle}"/><br/>
+
+    <label for="description">Описание: </label>
+    <input type="text" id="description" name="description" th:field="*{testCaseDescription}"/><br/>
+
+    <label for="inputData">Входные данные: </label>
+    <input type="text" id="inputData" name="inputData" th:field="*{inputData}"/><br/>
+
+    <label for="outputData">Выходные данные: </label>
+    <input type="text" id="outputData" name="outputData" th:field="*{outputData}"/><br/>
+
+
+    <button type="submit" name="action" value="add">Сохранить изменения</button>
+</form>
+
+<br>
+<br>
+<form th:action="@{/analyst/testCases}" method="get">
+    <button type="submit" >Вернуться к управлению тест-кейсами</button>
+</form>
+
+</body>
+</html>

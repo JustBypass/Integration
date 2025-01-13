@@ -15,6 +15,231 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/integration/activate": {
+            "post": {
+                "description": "Activate testers by providing a list of User IDs",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Integration"
+                ],
+                "summary": "Activate testers",
+                "parameters": [
+                    {
+                        "description": "List of User IDs to be activated",
+                        "name": "users",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ActivateTesters",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/integration/chdata": {
+            "post": {
+                "description": "Change personal data of users by providing a list of user data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Integration"
+                ],
+                "summary": "Change user data",
+                "parameters": [
+                    {
+                        "description": "List of User Data to be updated",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.NUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ChangeUserData",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/integration/chroles": {
+            "post": {
+                "description": "Change the roles of testers by mapping User IDs to Roles",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Integration"
+                ],
+                "summary": "Change roles of testers",
+                "parameters": [
+                    {
+                        "description": "Map of User IDs to Roles",
+                        "name": "roles",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ChangeRoles",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/integration/deactivate": {
+            "post": {
+                "description": "Deactivate testers by providing a list of User IDs",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Integration"
+                ],
+                "summary": "Deactivate testers",
+                "parameters": [
+                    {
+                        "description": "List of User IDs to be deactivated",
+                        "name": "users",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "DeactivateTesters",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/integration/getallusers": {
+            "get": {
+                "description": "Retrieve a list of all users",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Integration"
+                ],
+                "summary": "Get all users",
+                "responses": {
+                    "200": {
+                        "description": "List of all users",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.NUser"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
         "/login": {
             "post": {
                 "description": "Login",
@@ -28,19 +253,47 @@ const docTemplate = `{
                     "Auth"
                 ],
                 "summary": "Login",
+                "parameters": [
+                    {
+                        "description": "Authentication form",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AuthForm"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.Tokens"
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "422": {
+                        "description": "Incorrect request body (bind error)",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
                     }
                 }
             }
         },
-        "/logout": {
-            "post": {
-                "description": "Logout",
+        "/profile": {
+            "get": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
+                "description": "Send information about authorized user",
                 "consumes": [
                     "application/json"
                 ],
@@ -48,18 +301,32 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Auth"
+                    "Profile"
                 ],
-                "summary": "Logout",
+                "summary": "Send information about authorized user",
                 "responses": {
-                    "204": {
-                        "description": "No Content"
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
                     }
                 }
             }
         },
         "/projects": {
             "get": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Get projects",
                 "consumes": [
                     "application/json"
@@ -101,6 +368,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Create project",
                 "consumes": [
                     "application/json"
@@ -147,6 +419,11 @@ const docTemplate = `{
         },
         "/projects/archived": {
             "get": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Get archived projects",
                 "produces": [
                     "application/json"
@@ -187,6 +464,11 @@ const docTemplate = `{
         },
         "/projects/{project_id}": {
             "get": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Get project by ID",
                 "consumes": [
                     "application/json"
@@ -235,6 +517,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Update project",
                 "consumes": [
                     "application/json"
@@ -292,6 +579,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Delete project",
                 "consumes": [
                     "application/json"
@@ -339,6 +631,11 @@ const docTemplate = `{
         },
         "/projects/{project_id}/archive": {
             "put": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Archive the project by id",
                 "produces": [
                     "application/json"
@@ -383,6 +680,11 @@ const docTemplate = `{
         },
         "/projects/{project_id}/members": {
             "get": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Get project members",
                 "consumes": [
                     "application/json"
@@ -409,7 +711,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.User"
+                                "$ref": "#/definitions/model.UserShort"
                             }
                         }
                     },
@@ -436,6 +738,11 @@ const docTemplate = `{
         },
         "/projects/{project_id}/members/{user_id}": {
             "post": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Add project member",
                 "consumes": [
                     "application/json"
@@ -456,11 +763,13 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "description": "User id",
-                        "name": "user_id",
-                        "in": "path",
-                        "required": true
+                        "description": "Project member",
+                        "name": "project_member",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Member"
+                        }
                     }
                 ],
                 "responses": {
@@ -488,6 +797,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Delete project member",
                 "consumes": [
                     "application/json"
@@ -542,6 +856,11 @@ const docTemplate = `{
         },
         "/projects/{project_id}/tasks": {
             "get": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Get project tasks",
                 "produces": [
                     "application/json"
@@ -563,7 +882,10 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Tasks"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Task"
+                            }
                         }
                     },
                     "404": {
@@ -589,6 +911,11 @@ const docTemplate = `{
         },
         "/projects/{project_id}/unarchive": {
             "put": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Unarchive the project by id",
                 "produces": [
                     "application/json"
@@ -644,6 +971,17 @@ const docTemplate = `{
                     "Auth"
                 ],
                 "summary": "Refresh",
+                "parameters": [
+                    {
+                        "description": "Refresh token",
+                        "name": "token",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Token"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -656,6 +994,11 @@ const docTemplate = `{
         },
         "/task": {
             "post": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Create task",
                 "consumes": [
                     "application/json"
@@ -667,11 +1010,34 @@ const docTemplate = `{
                     "Task"
                 ],
                 "summary": "Create task",
+                "parameters": [
+                    {
+                        "description": "Task",
+                        "name": "task",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.TaskInserted"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/model.Task"
+                        }
+                    },
+                    "422": {
+                        "description": "Incorrect request body (bind error)",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
                         }
                     }
                 }
@@ -679,6 +1045,11 @@ const docTemplate = `{
         },
         "/task/{id}": {
             "get": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Get task by ID",
                 "consumes": [
                     "application/json"
@@ -690,16 +1061,48 @@ const docTemplate = `{
                     "Task"
                 ],
                 "summary": "Get task by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Task ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.Task"
                         }
+                    },
+                    "404": {
+                        "description": "Task not found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "422": {
+                        "description": "Incorrect id",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
                     }
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Update task",
                 "consumes": [
                     "application/json"
@@ -711,16 +1114,57 @@ const docTemplate = `{
                     "Task"
                 ],
                 "summary": "Update task",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Task ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Task",
+                        "name": "task",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.TaskInserted"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.Task"
                         }
+                    },
+                    "404": {
+                        "description": "Task not found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "422": {
+                        "description": "Incorrect id/Incorrect request body (bind error)",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
                     }
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Delete task",
                 "consumes": [
                     "application/json"
@@ -732,15 +1176,69 @@ const docTemplate = `{
                     "Task"
                 ],
                 "summary": "Delete task",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Task ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "No Content"
+                    },
+                    "404": {
+                        "description": "Task not found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "422": {
+                        "description": "Incorrect id",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/task/{id}/upload": {
+            "post": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
+                "description": "Upload task",
+                "tags": [
+                    "Task"
+                ],
+                "summary": "Upload task",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
                     }
                 }
             }
         },
         "/users": {
             "get": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Get users",
                 "consumes": [
                     "application/json"
@@ -753,6 +1251,12 @@ const docTemplate = `{
                 ],
                 "summary": "Get users",
                 "parameters": [
+                    {
+                        "type": "boolean",
+                        "description": "Get admins or users",
+                        "name": "isAdmin",
+                        "in": "query"
+                    },
                     {
                         "type": "integer",
                         "description": "Page index",
@@ -776,6 +1280,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Create user",
                 "consumes": [
                     "application/json"
@@ -810,6 +1319,11 @@ const docTemplate = `{
         },
         "/users/{id}": {
             "get": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Get user by ID",
                 "consumes": [
                     "application/json"
@@ -840,6 +1354,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Update user",
                 "consumes": [
                     "application/json"
@@ -882,6 +1401,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Delete User",
                 "consumes": [
                     "application/json"
@@ -914,6 +1438,11 @@ const docTemplate = `{
         },
         "/users/{id}/projects": {
             "get": {
+                "security": [
+                    {
+                        "Login": []
+                    }
+                ],
                 "description": "Get user projects",
                 "consumes": [
                     "application/json"
@@ -961,6 +1490,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "model.AuthForm": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "model.InsertProject": {
             "type": "object",
             "properties": {
@@ -968,6 +1508,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Member": {
+            "type": "object",
+            "properties": {
+                "is_admin_project": {
+                    "type": "boolean"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "string"
                 }
             }
@@ -980,6 +1534,9 @@ const docTemplate = `{
                 }
             }
         },
+        "model.NUser": {
+            "type": "object"
+        },
         "model.Project": {
             "type": "object",
             "properties": {
@@ -991,6 +1548,9 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
                 },
                 "name": {
                     "type": "string"
@@ -1005,6 +1565,9 @@ const docTemplate = `{
             "properties": {
                 "id": {
                     "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
                 },
                 "name": {
                     "type": "string"
@@ -1034,10 +1597,19 @@ const docTemplate = `{
         "model.Task": {
             "type": "object",
             "properties": {
+                "author_id": {
+                    "type": "string"
+                },
                 "created_at": {
                     "type": "string"
                 },
+                "deadline": {
+                    "type": "string"
+                },
                 "description": {
+                    "type": "string"
+                },
+                "executor_id": {
                     "type": "string"
                 },
                 "id": {
@@ -1049,22 +1621,48 @@ const docTemplate = `{
                 "project_id": {
                     "type": "string"
                 },
-                "updated_at": {
+                "status": {
                     "type": "string"
                 },
-                "user_id": {
+                "tester_id": {
                     "type": "string"
                 }
             }
         },
-        "model.Tasks": {
+        "model.TaskInserted": {
             "type": "object",
             "properties": {
-                "items": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.Task"
-                    }
+                "author_id": {
+                    "type": "string"
+                },
+                "deadline": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "executor_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "project_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "tester_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Token": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
                 }
             }
         },
@@ -1085,19 +1683,22 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
-                "email": {
-                    "type": "string"
-                },
                 "first_name": {
                     "type": "string"
                 },
                 "id": {
                     "type": "string"
                 },
+                "is_admin": {
+                    "type": "boolean"
+                },
                 "last_name": {
                     "type": "string"
                 },
                 "middle_name": {
+                    "type": "string"
+                },
+                "position": {
                     "type": "string"
                 },
                 "updated_at": {
@@ -1111,16 +1712,22 @@ const docTemplate = `{
         "model.UserInserted": {
             "type": "object",
             "properties": {
-                "email": {
-                    "type": "string"
-                },
                 "first_name": {
                     "type": "string"
+                },
+                "is_admin": {
+                    "type": "boolean"
                 },
                 "last_name": {
                     "type": "string"
                 },
                 "middle_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "position": {
                     "type": "string"
                 },
                 "username": {
@@ -1136,6 +1743,9 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "string"
+                },
+                "is_admin": {
+                    "type": "boolean"
                 },
                 "username": {
                     "type": "string"

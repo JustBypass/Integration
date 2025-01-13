@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Testing management system</title>
+</head>
+<body>
+
+<h2>Выберите сценарий</h2>
+<form th:action="@{/analyst/scenarios/alter}" method="POST" th:object="${chosenScenario}">
+    <select class="form-control" name="chosenScenario">
+        <option value="0">Выберите сценарий тестирования</option>
+        <option th:each="scenario : ${scenarios}" th:value="${scenario.id}" th:text="${scenario.title}"></option>
+    </select>
+    <button type="submit" name="action" value="delete">Удалить</button>
+    <button type="submit" name="action" value="change">Изменить</button>
+</form>
+<br>
+
+<h2>Добавить новый сценарий</h2>
+<form method="POST" th:action="@{/analyst/scenarios/add}">
+
+    <label for="title">Название: </label>
+    <input th:value="${newScenarioTitle}" type="text" id="title" name="newScenarioTitle"/><br/>
+
+    <button type="submit" name="action" value="add">Добавить новый сценарий</button>
+</form>
+
+
+
+<h2>Выберите сценарий и тест-кейсы которые необходимо в него включить</h2>
+<form  th:action="@{/analyst/scenarios/populate}" method="POST" th:object="${populateScenarioForm}">
+    <select class="form-control" name="scenarioId" th:field="*{formScenario}">
+        <option value="0">Выберите сценарий тестирования</option>
+        <option th:each="scenario : ${scenarios}" th:value="${scenario.id}" th:text="${scenario.title}" ></option>
+    </select>
+
+
+    <div th:each="testCase : ${testCases}">
+        <input type="checkbox" name="linkedTestCases"  th:value="${testCase.id}"  th:field="*{testCases}"/>
+        <span th:text="${testCase.title}"></span><br/>
+    </div>
+    <button>Добавить выбранные тест-кейсы в выбранный сценарий</button>
+</form>
+
+<br>
+<br>
+<form th:action="@{/analyst}" method="get">
+    <button type="submit" >Вернуться к выбору проекта</button>
+</form>
+
+</body>
+</html>

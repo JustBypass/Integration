@@ -38,3 +38,12 @@ type UsersPaged struct {
 	Total     int          `json:"total"`
 	Users     []*UserShort `json:"items"`
 }
+
+type NUser struct {
+	Name       string `json:"name"`
+	Surname    string `json:"surname"`
+	Patronymic string `json:"patronymic"`
+	Login      string `json:"login"`
+	Password   string `json:"password"`
+	FullName   string `json:"fullName"`
+}

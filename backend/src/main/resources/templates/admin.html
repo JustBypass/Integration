@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Testing management system</title>
+</head>
+<body>
+    <h3 th:if="@{currentUser}" th:text="'Вы вошли как: ' +  ${currentUser.login}"></h3>
+    <form th:action="@{/analyst/logout}" method="get">
+       <button type="submit" >выйти</button>
+    </form>
+
+
+
+    <h3>Выберите пользователя и роль, которую ему нужно назначить</h3>
+    <form method="POST" th:action="@{/admin/assignRole}" th:object="${assignForm}">
+
+        <select th:field="*{user}">
+            <option value="0">Выберите пользователя</option>
+            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.login}" th:field="*{user}"></option>
+        </select>
+
+        <select th:field="*{role}">
+            <option value="0">Выберите роль</option>
+            <option th:each="role : ${roles}" th:value="${role.title}" th:text="${role.title} + '-' + ${role.description}" th:field="*{role}"></option>
+        </select>
+
+        <input th:text="'Cнять роль'" type="checkbox" th:field="*{remove}">
+
+        <button>Обновить информацию о роли</button>
+
+    </form>
+
+    <br>
+    <br>
+
+    <h3>Выберите пользователя и укажите, активен ли этот аккаунт</h3>
+    <form method="POST" th:action="@{/admin/setActive}" th:object="${activeForm}">
+
+        <select th:field="*{user}">
+            <option value="0">Выберите пользователя</option>
+            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.login}" th:field="*{user}"></option>
+        </select>
+
+        <input th:text="'активный/нет'" type="checkbox" th:field="*{active}">
+        <button>Обновить статус аккаунта</button>
+
+    </form>
+
+    <br>
+    <br>
+
+    <h3>Выберите пользователя для редактирования его фио</h3>
+    <form method="POST" th:action="@{/admin/setFullName}" th:object="${fullNameForm}">
+
+        <select th:field="*{user}">
+            <option value="0">Выберите пользователя</option>
+            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.login}" th:field="*{user}"></option>
+        </select>
+        <br>
+        <input th:text="'Фамилия'" type="text" th:field="*{surname}">
+        <input th:text="'Имя'" type="text" th:field="*{name}">
+        <input th:text="'Отчество'" type="text" th:field="*{patronymic}">
+        <button>Обновить ФИО пользователя</button>
+
+    </form>
+
+    <br>
+    <br>
+    <form method="POST" th:action="@{/admin/deleteWithoutRoles}" >
+        <button>Удалить пользователей без ролей</button>
+    </form>
+
+    <form method="POST" th:action="@{/admin/deleteInactive}" >
+        <button>Удалить неактивных пользователей</button>
+    </form>
+
+</body>
+</html>

@@ -40,6 +40,24 @@ func toUserFromRepo(userFromDb user) *model.User {
 	}
 }
 
+func toUsersFromRepoList(usersFromDb []user) []model.User {
+	var users []model.User
+	for _, userFromDb := range usersFromDb {
+		users = append(users, model.User{
+			ID:         userFromDb.ID,
+			Username:   userFromDb.Username,
+			IsAdmin:    userFromDb.IsAdmin,
+			FirstName:  userFromDb.FirstName,
+			MiddleName: userFromDb.MiddleName,
+			LastName:   userFromDb.LastName,
+			Position:   userFromDb.Position,
+			CreatedAt:  userFromDb.CreatedAt,
+			UpdatedAt:  userFromDb.UpdatedAt,
+		})
+	}
+	return users
+}
+
 func toProjectShortsFromDb(projectsFromDb []projectShort) []*model.ProjectShort {
 	projects := make([]*model.ProjectShort, len(projectsFromDb))
 	for i := range projects {

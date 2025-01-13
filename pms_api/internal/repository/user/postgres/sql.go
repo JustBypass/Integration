@@ -5,6 +5,12 @@ const (
 		SELECT COUNT(id)
 		FROM users
 	`
+
+	getTestersQuery = `
+		SELECT *
+		FROM testers_view 
+	`
+
 	getUsersQuery = `
 		SELECT id, login, is_admin, first_name, middle_name, last_name
 		FROM users
@@ -42,4 +48,26 @@ const (
 		JOIN participants_project pp on pp.project_id = p.id
 		WHERE pp.user_id = @user_id
 	`
+
+	//	insertRole = `
+	//		-- 1. Находим id роли по её имени, например 'Руководитель проекта'
+	//		WITH role_id AS (
+	//			SELECT id
+	//			FROM public.role
+	//			WHERE name_role = @roleName
+	//			LIMIT 1
+	//		),
+	//		-- 2. Находим id пользователя, если его нужно искать по логину (например 'ivanov123')
+	//		user_id AS (
+	//			SELECT id
+	//			FROM public.users
+	//			WHERE fullName = @fullName
+	//			LIMIT 1
+	//		)
+	//		-- 3. Вставляем данные в таблицу participants_project
+	//		INSERT INTO public.participants_project (user_id, project_id, role_id, is_admin_project)
+	//		SELECT u.id, 'project-uuid', r.id, true -- 'project-uuid' замените на реальный UUID проекта
+	//		FROM user_id u, role_id r
+	//		WHERE u.id IS NOT NULL AND r.id IS NOT NULL;
+	//`
 )

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Testing management system</title>
+</head>
+<body>
+<h3 th:if="@{currentUser}" th:text="'Вы вошли как: ' +  ${currentUser.login}"></h3>
+<form th:action="@{/director/logout}" method="get">
+    <button type="submit" >выйти</button>
+</form>
+
+
+<h2>Выберите проект</h2>
+<h3>Если вы еще не являетесь его руководителем, то будете автоматически назначены</h3>
+<form th:action="@{/director/projectName}" method="POST" th:object="${projectName}">
+    <select class="form-control" id="dropDownProjectList" name="projectName">
+        <option value="0">Выберите проект</option>
+        <option th:each="project : ${projects}" th:value="${project.title}" th:text="${project.title}"></option>
+    </select>
+    <button type="submit">Подтвердить и перейти к управлению проектом</button>
+</form>
+
+<br>
+<br>
+<form th:action="@{/statistics}" method="get">
+    <button type="submit" >Посмотреть статистику тестирования</button>
+</form>
+
+</body>
+</html>

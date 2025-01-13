@@ -3,6 +3,8 @@ package postgres
 import (
 	"context"
 	"errors"
+	"fmt"
+	"log"
 	"pms_backend/pms_api/internal/pkg/model"
 
 	"github.com/jackc/pgx/v5"
@@ -92,6 +94,7 @@ func (r *userRepository) UpdateUser(ctx context.Context, user *model.User) error
 		"position":    user.Position,
 		"updated_at":  user.UpdatedAt,
 	})
+
 	return err
 }
 
@@ -113,4 +116,46 @@ func (r *userRepository) GetUserProjects(ctx context.Context, userID string) ([]
 		return nil, err
 	}
 	return toProjectShortsFromDb(items), nil
+}
+
+func convertUserShortToNUsers(users []userShort) []model.NUser {
+	var nUsers []model.NUser
+
+	for _, user := range users {
+		nUser := model.NUser{
+			Name:       user.FirstName,
+			Surname:    user.LastName,
+			Patronymic: user.MiddleName,
+			Login:      user.Username,
+			Password:   "",                                                                      // Если нужно, добавьте логику для пароля
+			FullName:   fmt.Sprintf("%s %s %s", user.FirstName, user.MiddleName, user.LastName), // Формирование полного имени
+		}
+		nUsers = append(nUsers, nUser)
+	}
+	return nUsers
+}
+
+func (r *userRepository) GetAllUsers(ctx context.Context) ([]model.NUser, error) {
+	println("GetAllUsers")
+	rows, err := r.pool.Query(ctx, getUsersQuery)
+	if err != nil {
+		log.Fatal("Query error:", err)
+	}
+	defer rows.Close()
+
+	// Собираем данные
+	items, err := pgx.CollectRows(rows, pgx.RowToStructByName[userShort])
+	if err != nil {
+		log.Fatal("CollectRows error:", err)
+	}
+	newItems := convertUserShortToNUsers(items)
+	println(newItems)
+	// Проверка, если items пустой
+	if len(items) == 0 {
+		log.Println("No rows returned")
+	} else {
+		fmt.Println("Items:", items)
+	}
+
+	return newItems, nil
 }

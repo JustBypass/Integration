@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Testing management system</title>
+</head>
+<body>
+
+<h2>Выберите тест-планы, которые хотите утвердить</h2>
+<form  th:action="@{/director/manageProject/approve}" method="POST">
+<!--    th:object="${approvedPlans}"-->
+    <div th:each="testPlan : ${testPlans}">
+        <input type="checkbox" th:value="${testPlan.id}" th:name="approvedPlans"/>
+        <span th:text="${testPlan.title}"></span><br/>
+        <span th:text="${testPlan.startDate + ' --- ' + testPlan.endDate}"></span><br/><br/>
+
+    </div>
+    <button>Утвердить выбранные тест-планы</button>
+</form>
+
+<h2>Выберите тестировщика и сценарии из утвержденных тест-планов, которые ему назначить</h2>
+<form  th:action="@{/director/manageProject/assign}" method="POST" th:object="${assignForm}">
+    <select th:field="*{formTester}">
+        <option value="0">Выберите тестировщика</option>
+        <option th:each="tester : ${testers}" th:value="${tester.id}" th:text="${tester.login}" th:field="*{formTester}"></option>
+    </select>
+
+
+    <div th:each="scenario : ${scenarios}">
+        <input type="checkbox"  th:value="${scenario.id}"  th:field="*{formScenarios}"/>
+        <span th:text="${scenario.title}"></span><br/>
+    </div>
+    <button>Добавить выбранные сценарии в выбранный тест-план</button>
+</form>
+
+<br>
+<br>
+<form th:action="@{/director}" method="get">
+    <button type="submit" >Вернуться к выбору проекта</button>
+</form>
+
+</body>
+</html>

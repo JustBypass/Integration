@@ -116,6 +116,9 @@ func (h *handler) GetUserByID(c echo.Context) error {
 // @Router /users [post]
 func (h *handler) CreateUser(c echo.Context) error {
 	userInserted := &model.UserInserted{}
+	println("CreateUser")
+	/// Post request for user creation
+
 	err := c.Bind(userInserted)
 	if err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, model.Message{Message: bindError})

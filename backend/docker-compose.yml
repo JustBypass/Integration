@@ -1,0 +1,34 @@
+
+services:
+  psql-db:
+    image: postgres
+    container_name: psql-db
+    restart: always
+    environment:
+      - POSTGRES_USER=testing_connection
+      - POSTGRES_PASSWORD=G4s7Zd6h2
+      - POSTGRES_DB=testing_system
+    ports:
+      - '5432:5432'
+    networks: [ "pms_services" ]
+
+  testing-system:
+    container_name: testing-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '9091:9091'
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://psql-db:5432/testing_system
+      - SPRING_DATASOURCE_USERNAME=testing_connection
+      - SPRING_DATASOURCE_PASSWORD=G4s7Zd6h2
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create
+    depends_on:
+      - psql-db
+    networks: [ "pms_services" ]
+
+networks:
+  pms_services:
+    name: pms_services
+    driver: bridge
